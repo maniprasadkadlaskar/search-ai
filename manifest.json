@@ -1,0 +1,8 @@
+{
+    "manifest_version": 3,
+    "name": "select ai alpha",
+    "version": "1.0.0",
+    "action": {
+        "default_popup": "index.html"
+    }
+}
