@@ -1,25 +1,18 @@
 import axios from "axios";
-
-// This file defines the options for the OllamaProvider class.
-interface OllamaProviderOptions {
-    model: string;
-}
+import type { LLMProvider, GenerateProps } from "./LLMProvider";
 
 // This class provides an interface to interact with the Ollama API for generating text responses.
-export class OllamaProvider {
-    private static readonly baseUrl: string = "http://localhost:11434";
-    private model: string;
+export class OllamaProvider implements LLMProvider {
+    private readonly baseUrl: string = "http://localhost:11434";
 
-    constructor(options: OllamaProviderOptions) {
-        this.model = options.model;
-    }
+    constructor() { }
 
     // Generates a response based on the provided prompt.
-    async generate(prompt: string): Promise<string> {
+    async generate(props: GenerateProps): Promise<string> {
         try {
-            const response = await axios.post(`${OllamaProvider.baseUrl}/api/generate`, {
-                model: this.model,
-                prompt: prompt,
+            const response = await axios.post(`${this.baseUrl}/api/generate`, {
+                model: props.model,
+                prompt: props.prompt,
                 stream: false, // Assuming we want a single response, not a stream
             });
 
@@ -31,9 +24,9 @@ export class OllamaProvider {
     }
 
     // Get models available from the provider.
-    static async getModels(): Promise<string[]> {
+    async getModels(): Promise<string[]> {
         try {
-            const response = await axios.get(`${OllamaProvider.baseUrl}/api/tags`);
+            const response = await axios.get(`${this.baseUrl}/api/tags`);
             const models = response.data.models.map((model: any) => model.name); // Assuming the API returns a 'models' field with model names
 
             return models;
