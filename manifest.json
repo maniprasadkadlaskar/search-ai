@@ -1,8 +1,29 @@
 {
     "manifest_version": 3,
     "name": "select ai alpha",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "action": {
         "default_popup": "index.html"
-    }
+    },
+    "background": {
+        "service_worker": "src/background.tsx"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "src/content.tsx"
+            ]
+        }
+    ],
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "storage"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ]
 }
