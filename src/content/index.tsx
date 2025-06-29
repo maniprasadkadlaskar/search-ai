@@ -38,17 +38,19 @@ const Content: FC = () => {
         setIsSearched(true);
         setContent('searching...');
 
-        const systemPrompt = 'You are a helpful AI assisstant. User input selected text from the web page. You need to provide a relevant information / answer with maximum of 200 characters. If you do not know the answer, just say "I do not know". Do not provide any other information.';
-
         chrome.runtime.sendMessage({
             client: "select-ai",
             query: {
-                prompt: systemPrompt + 'selected text: ' + selectedText,
-                model: "llama3.1",
+                prompt: selectedText,
             }
         }, (response) => {
-            if (response)
-                setContent(response?.text);
+            if (response) {
+                if (response.success === false) {
+                    setContent("Error: " + response.error || "An error occurred while processing your request.");
+                } else {
+                    setContent(response?.text);
+                }
+            }
         })
     }
 

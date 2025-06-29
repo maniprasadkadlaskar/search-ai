@@ -1,14 +1,17 @@
+import Home from "./components/Home";
+import Configuration from "./components/Configuration";
+import Version from "./components/Version";
 
 const App = () => {
   return (
-    <>
-      <h1
-        className="p-5 text-3xl font-bold text-center mt-10 mb-5 bg-purple-400"
-      >
-        Select AI
-      </h1>
-    </>
-  )
+    <div
+      className="min-w-max text-white bg-gray-700"
+    >
+      <Home />
+      <Configuration />
+      <Version />
+    </div>
+  );
 }
 
-export default App
+export default App;
