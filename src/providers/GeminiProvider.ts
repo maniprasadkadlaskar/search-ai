@@ -1,18 +1,13 @@
 import axios from "axios";
-import type { LLMProvider, GenerateProps } from "./LLMProvider";
-
-// This file defines the options for the GeminiProvider class.
-interface GeminiProviderOptions {
-    apiKey: string;
-}
+import type { ModelProvider, GenerateProps, ConfigProps } from "./ModelProvider";
 
 // This class provides an interface to interact with the Gemini API for generating text responses.
-export class GeminiProvider implements LLMProvider {
+class GeminiProvider implements ModelProvider {
     private readonly baseUrl: string = "https://generativelanguage.googleapis.com/v1beta/models";
     private apiKey: string;
 
-    constructor(options: GeminiProviderOptions) {
-        this.apiKey = options.apiKey;
+    constructor(props: ConfigProps) {
+        this.apiKey = props.apiKey;
     }
 
     // Generates a response based on the provided prompt.
@@ -37,9 +32,9 @@ export class GeminiProvider implements LLMProvider {
             });
 
             return response.data.candidates[0].content.parts[0].text;
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error generating response:", error);
-            throw new Error("Failed to generate response from Gemini provider.");
+            throw new Error(error.message);
         }
     }
 
@@ -47,12 +42,16 @@ export class GeminiProvider implements LLMProvider {
     async getModels(): Promise<string[]> {
         try {
             const response = await axios.get(`${this.baseUrl}?key=${this.apiKey}`);
-            const models = response.data.models.map((model: any) => model.name); // Assuming the API returns a 'models' field with model names
+            const models = response.data.models
+                .filter((model: any) => model?.supportedGenerationMethods?.includes('generateContent'))
+                .map((model: any) => model.name.replace(/^models\//, ''));
 
             return models;
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error fetching models:", error);
-            throw new Error("Failed to fetch models from Gemini provider.");
+            throw new Error(error.message);
         }
     }
 }
+
+export default GeminiProvider;

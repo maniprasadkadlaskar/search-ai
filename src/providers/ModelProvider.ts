@@ -4,8 +4,13 @@ export interface GenerateProps {
     prompt: string;
 }
 
+// Configuration properties for the LLMProvider.
+export interface ConfigProps {
+    apiKey: string; // Optional API key for providers that require it
+}
+
 // LLMProvider interface defines the methods for interacting with a language model provider.
-export interface LLMProvider {
+export interface ModelProvider {
 
     // Generate text based on the provided model and prompt.
     generate(props: GenerateProps): Promise<string>;

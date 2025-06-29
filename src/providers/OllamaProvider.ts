@@ -1,8 +1,8 @@
 import axios from "axios";
-import type { LLMProvider, GenerateProps } from "./LLMProvider";
+import type { ModelProvider, GenerateProps } from "./ModelProvider";
 
 // This class provides an interface to interact with the Ollama API for generating text responses.
-export class OllamaProvider implements LLMProvider {
+class OllamaProvider implements ModelProvider {
     private readonly baseUrl: string = "http://localhost:11434";
 
     constructor() { }
@@ -17,9 +17,9 @@ export class OllamaProvider implements LLMProvider {
             });
 
             return response.data.response;
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error generating response:", error);
-            throw new Error("Failed to generate response from Ollama provider.");
+            throw new Error(error.message);
         }
     }
 
@@ -30,9 +30,11 @@ export class OllamaProvider implements LLMProvider {
             const models = response.data.models.map((model: any) => model.name); // Assuming the API returns a 'models' field with model names
 
             return models;
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error fetching models:", error);
-            throw new Error("Failed to fetch models from Ollama provider.");
+            throw new Error(error.message);
         }
     }
 }
+
+export default OllamaProvider;
