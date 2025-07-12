@@ -28,8 +28,6 @@ class ModelProviderFactory {
     // Creates a provider instance based on the provided configuration.
     static createProvider({ provider, config }: ModelProviderProps) {
         switch (provider) {
-            case 'ollama':
-                return new OllamaProvider();
             case 'gemini':
                 return new GeminiProvider(config);
             default:

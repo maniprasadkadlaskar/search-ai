@@ -1,8 +1,8 @@
 import axios from "axios";
-import type { ModelProvider, GenerateProps } from "./ModelProvider";
+import type { IModelProvider, GenerateProps } from "./ModelProvider";
 
 // This class provides an interface to interact with the Ollama API for generating text responses.
-class OllamaProvider implements ModelProvider {
+class OllamaProvider implements IModelProvider {
     private readonly baseUrl: string = "http://localhost:11434";
 
     constructor() { }

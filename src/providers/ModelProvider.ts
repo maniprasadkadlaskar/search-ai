@@ -10,7 +10,7 @@ export interface ConfigProps {
 }
 
 // LLMProvider interface defines the methods for interacting with a language model provider.
-export interface ModelProvider {
+export interface IModelProvider {
 
     // Generate text based on the provided model and prompt.
     generate(props: GenerateProps): Promise<string>;

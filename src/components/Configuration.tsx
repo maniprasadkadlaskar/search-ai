@@ -31,7 +31,7 @@ const Configuration: FC = () => {
         }
     }
 
-    const validate = async (event: any) => {
+    const validateApiKey = async (event: any) => {
         event.preventDefault();
 
         const provider = ModelProviderFactory.createProvider({
@@ -151,7 +151,7 @@ const Configuration: FC = () => {
 
                         <button
                             className="p-1 bg-blue-400 rounded cursor-pointer"
-                            onClick={validate}
+                            onClick={validateApiKey}
                         >
                             Validate
                         </button>
