@@ -11,7 +11,7 @@ const Configuration: FC = () => {
     const [models, setModels] = useState<string[]>([]);
     const [systemPrompt, setSystemPrompt] = useState<string>("");
     const [apiKeyError, setApiKeyError] = useState<boolean>(false);
-    const [modelError, setModelError] = useState<boolean>(false);
+    // const [modelError, setModelError] = useState<boolean>(false);
 
     const handleProvider = (event: any) => {
         const provider: keyof typeof providerType = event.target.value;
@@ -55,11 +55,11 @@ const Configuration: FC = () => {
         event.preventDefault();
 
         chrome.storage.local.set({
-            'select-ai-model-provider': modelProvider,
-            'select-ai-model-type': modelType,
-            'select-ai-model-api-key': apiKey,
-            'select-ai-model': model,
-            'select-ai-system-prompt': systemPrompt,
+            'search-ai-model-provider': modelProvider,
+            'search-ai-model-type': modelType,
+            'search-ai-model-api-key': apiKey,
+            'search-ai-model': model,
+            'search-ai-system-prompt': systemPrompt,
         });
 
         chrome.runtime.reload();
@@ -73,11 +73,11 @@ const Configuration: FC = () => {
         setModels([]);
 
         chrome.storage.local.remove([
-            'select-ai-model-provider',
-            'select-ai-model-type',
-            'select-ai-model-api-key',
-            'select-ai-model',
-            'select-ai-system-prompt',
+            'search-ai-model-provider',
+            'search-ai-model-type',
+            'search-ai-model-api-key',
+            'search-ai-model',
+            'search-ai-system-prompt',
         ]);
 
         chrome.runtime.reload();
@@ -91,20 +91,20 @@ const Configuration: FC = () => {
 
     useEffect(() => {
         chrome.storage.local.get([
-            'select-ai-model-provider',
-            'select-ai-model-type',
-            'select-ai-model-api-key',
-            'select-ai-model',
-            'select-ai-system-prompt',
+            'search-ai-model-provider',
+            'search-ai-model-type',
+            'search-ai-model-api-key',
+            'search-ai-model',
+            'search-ai-system-prompt',
         ], (response) => {
-            setModelProvider(response['select-ai-model-provider']);
-            setModelType(response['select-ai-model-type']);
-            setApiKey(response['select-ai-model-api-key']);
-            setModel(response['select-ai-model']);
-            setModels([response['select-ai-model']]);
+            setModelProvider(response['search-ai-model-provider']);
+            setModelType(response['search-ai-model-type']);
+            setApiKey(response['search-ai-model-api-key']);
+            setModel(response['search-ai-model']);
+            setModels([response['search-ai-model']]);
 
-            if (response['select-ai-system-prompt']) {
-                setSystemPrompt(response['select-ai-system-prompt']);
+            if (response['search-ai-system-prompt']) {
+                setSystemPrompt(response['search-ai-system-prompt']);
             } else {
                 setSystemPrompt('You are a helpful AI assisstant. User input selected text from the web page. You need to provide a relevant information / answer with maximum of 200 characters. If you do not know the answer, just say "I do not know". Do not provide any other information.');
             }
@@ -119,7 +119,7 @@ const Configuration: FC = () => {
                 <div>
                     <select
                         className="p-2 w-full bg-gray-700 border border-gray-400 rounded cursor-pointer"
-                        name="select-ai-llm-provider"
+                        name="search-ai-llm-provider"
                         value={modelProvider}
                         onChange={handleProvider}
                         required
@@ -135,7 +135,7 @@ const Configuration: FC = () => {
                     >
                         <input
                             className="p-2 w-full bg-gray-700 border border-gray-400 rounded"
-                            name="select-ai-llm-api-key"
+                            name="search-ai-llm-api-key"
                             type="text"
                             placeholder="Enter API key"
                             value={apiKey}
@@ -163,7 +163,7 @@ const Configuration: FC = () => {
                     <div>
                         <select
                             className="p-2 w-full bg-gray-700 border border-gray-400 rounded cursor-pointer"
-                            name="select-ai-llm-model"
+                            name="search-ai-llm-model"
                             value={model}
                             onChange={(e) => setModel(e.target.value)}
                             required
@@ -173,11 +173,11 @@ const Configuration: FC = () => {
                         </select>
                     </div>
 
-                    {modelError && <div
+                    {/* {modelError && <div
                         className="text-red-500"
                     >
                         <span>Selected invalid text model</span>
-                    </div>}
+                    </div>} */}
                 </div>
 
                 <div>
@@ -190,7 +190,7 @@ const Configuration: FC = () => {
                     <div>
                         <textarea
                             className="system-prompt p-2 w-full bg-gray-700 border border-gray-400 rounded"
-                            name="select-ai-system-prompt"
+                            name="search-ai-system-prompt"
                             value={systemPrompt}
                             onChange={(e) => setSystemPrompt(e.target.value)}
                             placeholder="System prompt"

@@ -3,23 +3,23 @@ import ModelProviderFactory from "./providers/ModelProviderFactory";
 var config: any = undefined;
 
 chrome.storage.local.get([
-    'select-ai-model-provider',
-    'select-ai-model-type',
-    'select-ai-model-api-key',
-    'select-ai-model',
-    'select-ai-system-prompt',
+    'search-ai-model-provider',
+    'search-ai-model-type',
+    'search-ai-model-api-key',
+    'search-ai-model',
+    'search-ai-system-prompt',
 ], (response) => {
     config = {
-        provider: response['select-ai-model-provider'],
-        type: response['select-ai-model-type'],
-        apiKey: response['select-ai-model-api-key'],
-        model: response['select-ai-model'],
-        systemPrompt: response['select-ai-system-prompt'],
+        provider: response['search-ai-model-provider'],
+        type: response['search-ai-model-type'],
+        apiKey: response['search-ai-model-api-key'],
+        model: response['search-ai-model'],
+        systemPrompt: response['search-ai-system-prompt'],
     };
 });
 
-chrome.runtime.onMessage.addListener((request: any, sender: any, sendResponse: any) => {
-    if (request.client === 'select-ai') {
+chrome.runtime.onMessage.addListener((request: any, _sender: any, sendResponse: any) => {
+    if (request.client === 'search-ai') {
         const { prompt } = request.query;
 
         if (config.model === undefined) {

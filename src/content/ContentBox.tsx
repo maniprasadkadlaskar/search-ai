@@ -23,7 +23,7 @@ const ContentBox: FC<ContentBoxProps> = ({ content, setIsSearched }) => {
             </div>
 
             <div
-                className="select-ai-content !p-2 !max-h-80 !overflow-auto"
+                className="search-ai-content !p-2 !max-h-80 !overflow-auto"
             >
                 {content}
             </div>

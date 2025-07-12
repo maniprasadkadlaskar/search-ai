@@ -39,7 +39,7 @@ const Content: FC = () => {
         setContent('searching...');
 
         chrome.runtime.sendMessage({
-            client: "select-ai",
+            client: "search-ai",
             query: {
                 prompt: selectedText,
             }

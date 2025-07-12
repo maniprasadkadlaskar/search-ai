@@ -3,7 +3,7 @@ const Home = () => {
         <div
             className="p-5 text-3xl text-center"
         >
-            <span>Select AI</span>
+            <span>Search AI</span>
         </div>
     );
 }
