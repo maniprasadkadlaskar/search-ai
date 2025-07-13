@@ -18,7 +18,7 @@ chrome.storage.local.get([
     };
 });
 
-chrome.runtime.onMessage.addListener((request: any, _sender: any, sendResponse: any) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     if (request.client === 'search-ai') {
         const { prompt } = request.query;
 

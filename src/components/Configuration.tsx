@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { useEffect, useState, type ChangeEvent, type FC, type FormEvent } from "react";
 import { providers, providerType } from "../utils/constants";
 import ModelProviderFactory from "../providers/ModelProviderFactory";
 import "./index.css";
@@ -11,11 +11,17 @@ const Configuration: FC = () => {
     const [models, setModels] = useState<string[]>([]);
     const [systemPrompt, setSystemPrompt] = useState<string>("");
     const [apiKeyError, setApiKeyError] = useState<boolean>(false);
-    // const [modelError, setModelError] = useState<boolean>(false);
+    const [modelError, setModelError] = useState<boolean>(false);
+    const [validateApiKeyLoading, setValidateApiKeyLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isApiKeyValidated, setIsApiKeyValidated] = useState<boolean>(false);
+    const [isconfigured, setIsConfigured] = useState<boolean>(false);
 
-    const handleProvider = (event: any) => {
-        const provider: keyof typeof providerType = event.target.value;
+    const handleProvider = (event: ChangeEvent<HTMLSelectElement>) => {
+        const provider: keyof typeof providerType = event.target.value as keyof typeof providerType;
         setModelProvider(provider);
+        setIsApiKeyValidated(false);
+        setIsConfigured(false);
 
         const type: string = providerType[provider];
 
@@ -31,8 +37,9 @@ const Configuration: FC = () => {
         }
     }
 
-    const validateApiKey = async (event: any) => {
+    const validateApiKey = async (event: FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
+        setValidateApiKeyLoading(true);
 
         const provider = ModelProviderFactory.createProvider({
             provider: modelProvider,
@@ -45,14 +52,55 @@ const Configuration: FC = () => {
             const models = await provider.getModels();
             setModels(models);
             setApiKeyError(false);
+            setIsApiKeyValidated(true);
         } catch (error) {
             setApiKeyError(true);
             console.log("Error validating API key: ", error);
         }
+
+        setValidateApiKeyLoading(false);
     }
 
-    const handleSubmit = (event: any) => {
+    const handleModelChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        setModel(event.target.value);
+        setModelError(false);
+        setIsApiKeyValidated(false);
+        setIsConfigured(false);
+    }
+
+    const validateModel = async () => {
+        const provider = modelType === "local"
+            ? ModelProviderFactory.createLocalProvider({ provider: modelProvider }) :
+            ModelProviderFactory.createProvider({
+                provider: modelProvider,
+                config: {
+                    apiKey: apiKey,
+                },
+            });
+
+        try {
+            await provider.generate({
+                model: model,
+                prompt: "Test prompt",
+            });
+            setModelError(false);
+
+            return true;
+        } catch (error) {
+            setModelError(true);
+            console.log("Error validating model: ", error);
+            return false;
+        }
+    }
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoading(true);
+
+        if (!await validateModel()) {
+            setLoading(false);
+            return;
+        }
 
         chrome.storage.local.set({
             'search-ai-model-provider': modelProvider,
@@ -62,6 +110,8 @@ const Configuration: FC = () => {
             'search-ai-system-prompt': systemPrompt,
         });
 
+        setIsConfigured(true);
+        setLoading(false);
         chrome.runtime.reload();
     }
 
@@ -71,6 +121,9 @@ const Configuration: FC = () => {
         setModel("");
         setModelType("local");
         setModels([]);
+        setModelError(false);
+        setIsApiKeyValidated(false);
+        setIsConfigured(false);
 
         chrome.storage.local.remove([
             'search-ai-model-provider',
@@ -79,8 +132,6 @@ const Configuration: FC = () => {
             'search-ai-model',
             'search-ai-system-prompt',
         ]);
-
-        chrome.runtime.reload();
     }
 
     useEffect(() => {
@@ -103,6 +154,14 @@ const Configuration: FC = () => {
             setModel(response['search-ai-model']);
             setModels([response['search-ai-model']]);
 
+            if (response['search-ai-model-api-key']) {
+                setIsApiKeyValidated(true);
+            }
+
+            if (response['search-ai-model']) {
+                setIsConfigured(true);
+            }
+
             if (response['search-ai-system-prompt']) {
                 setSystemPrompt(response['search-ai-system-prompt']);
             } else {
@@ -114,7 +173,7 @@ const Configuration: FC = () => {
     return (
         <form onSubmit={handleSubmit} onReset={handleReset}>
             <div
-                className="p-3 w-72 space-y-5"
+                className="p-2 w-72 space-y-4"
             >
                 <div>
                     <select
@@ -143,17 +202,24 @@ const Configuration: FC = () => {
                             required
                         />
 
+                        <div
+                            className="text-gray-400 text-xs"
+                        >
+                            <span>Validate API key to choose provider model.</span>
+                        </div>
+
                         {apiKeyError && <div
-                            className="text-red-500"
+                            className="px-1 text-red-500 text-xs"
                         >
                             <span>Invalid API key</span>
                         </div>}
 
                         <button
-                            className="p-1 bg-blue-400 rounded cursor-pointer"
+                            className={`p-1 bg-blue-400 hover:bg-blue-500 rounded ${validateApiKeyLoading || isApiKeyValidated ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                             onClick={validateApiKey}
+                            disabled={validateApiKeyLoading || isApiKeyValidated}
                         >
-                            Validate
+                            {validateApiKeyLoading ? 'Validating...' : 'Validate'}
                         </button>
                     </div>}
 
@@ -165,7 +231,7 @@ const Configuration: FC = () => {
                             className="p-2 w-full bg-gray-700 border border-gray-400 rounded cursor-pointer"
                             name="search-ai-llm-model"
                             value={model}
-                            onChange={(e) => setModel(e.target.value)}
+                            onChange={handleModelChange}
                             required
                         >
                             <option value="">Choose model</option>
@@ -173,16 +239,16 @@ const Configuration: FC = () => {
                         </select>
                     </div>
 
-                    {/* {modelError && <div
-                        className="text-red-500"
+                    {modelError && <div
+                        className="px-1 text-red-500 text-xs"
                     >
-                        <span>Selected invalid text model</span>
-                    </div>} */}
+                        <span>Invalid text model</span>
+                    </div>}
                 </div>
 
                 <div>
                     <div
-                        className="p-1 text-gray-400 text-xs"
+                        className="px-1 text-gray-400 text-xs"
                     >
                         <span>Adjust the system prompt to meet your requirements.</span>
                     </div>
@@ -202,11 +268,18 @@ const Configuration: FC = () => {
                 <div
                     className="space-y-2"
                 >
-                    <button
-                        className="py-1 w-full bg-blue-400 hover:bg-blue-500 rounded cursor-pointer"
-                        type="submit"
+                    <div
+                        className="text-gray-400 text-xs"
                     >
-                        Save
+                        <span>Click save and refresh the page to apply changes.</span>
+                    </div>
+
+                    <button
+                        className={`py-1 w-full bg-blue-400 hover:bg-blue-500 rounded ${loading || isconfigured ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                        type="submit"
+                        disabled={loading || isconfigured}
+                    >
+                        {loading ? 'Configuring...' : 'Save'}
                     </button>
 
                     <button
