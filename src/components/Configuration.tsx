@@ -1,6 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FC, type FormEvent } from "react";
 import { providers, providerType } from "../utils/constants";
-import ModelProviderFactory from "../providers/ModelProviderFactory";
 import "./index.css";
 
 const Configuration: FC = () => {
@@ -14,51 +13,81 @@ const Configuration: FC = () => {
     const [modelError, setModelError] = useState<boolean>(false);
     const [validateApiKeyLoading, setValidateApiKeyLoading] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [isApiKeyValidated, setIsApiKeyValidated] = useState<boolean>(false);
+    const [isApiKeyValidated, setIsApiKeyValidated] = useState<boolean>(true);
     const [isconfigured, setIsConfigured] = useState<boolean>(false);
 
-    const handleProvider = (event: ChangeEvent<HTMLSelectElement>) => {
-        const provider: keyof typeof providerType = event.target.value as keyof typeof providerType;
-        setModelProvider(provider);
+    const clearConfiguration = () => {
+        setApiKey("");
+        setModel("");
+        setModels([]);
+        setModelError(false);
         setIsApiKeyValidated(false);
         setIsConfigured(false);
+    }
+
+    const handleProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        const provider: keyof typeof providerType = event.target.value as keyof typeof providerType;
+        setModelProvider(provider);
+        clearConfiguration();
 
         const type: string = providerType[provider];
 
         if (type === 'local') {
-            const localProvider = ModelProviderFactory.createLocalProvider({
-                provider: provider,
-            });
 
-            (async () => {
-                const models: string[] = await localProvider.getModels();
-                setModels(models);
-            })();
+            chrome.runtime.sendMessage({
+                client: "search-ai",
+                action: "getModels",
+                query: {
+                    provider: provider,
+                    type: type,
+                },
+                refresh: true,
+            }, (response) => {
+                if (response) {
+                    if (response.success === false) {
+                        console.error("Error fetching models: ", response.error);
+                    } else {
+                        setModels(response?.models);
+                    }
+                }
+            });
         }
+    }
+
+    const handleApiKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setApiKey(event.target.value);
+        setIsApiKeyValidated(false);
+        setApiKeyError(false);
     }
 
     const validateApiKey = async (event: FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
         setValidateApiKeyLoading(true);
 
-        const provider = ModelProviderFactory.createProvider({
-            provider: modelProvider,
-            config: {
+        chrome.runtime.sendMessage({
+            client: "search-ai",
+            action: "getModels",
+            query: {
+                provider: modelProvider,
+                type: modelType,
                 apiKey: apiKey,
             },
+            refresh: true,
+        }, (response) => {
+            if (response) {
+                if (response.success === false) {
+                    setApiKeyError(true);
+                    setIsApiKeyValidated(false);
+                    setValidateApiKeyLoading(false);
+                    console.log("Error validating API key: ", response.error || "An error occurred while fetching models.");
+                } else {
+                    setModels(response?.models);
+                    setApiKeyError(false);
+                    setIsApiKeyValidated(true);
+                    setValidateApiKeyLoading(false);
+                }
+            }
         });
-
-        try {
-            const models = await provider.getModels();
-            setModels(models);
-            setApiKeyError(false);
-            setIsApiKeyValidated(true);
-        } catch (error) {
-            setApiKeyError(true);
-            console.log("Error validating API key: ", error);
-        }
-
-        setValidateApiKeyLoading(false);
     }
 
     const handleModelChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -69,28 +98,23 @@ const Configuration: FC = () => {
     }
 
     const validateModel = async () => {
-        const provider = modelType === "local"
-            ? ModelProviderFactory.createLocalProvider({ provider: modelProvider }) :
-            ModelProviderFactory.createProvider({
-                provider: modelProvider,
-                config: {
+        return new Promise((resolve) => {
+            chrome.runtime.sendMessage({
+                client: "search-ai",
+                action: "validateModel",
+                query: {
+                    provider: modelProvider,
+                    type: modelType,
                     apiKey: apiKey,
+                    model: model,
                 },
+            }, (response) => {
+                if (response) {
+                    setModelError(response.success);
+                    resolve(response.success);
+                }
             });
-
-        try {
-            await provider.generate({
-                model: model,
-                prompt: "Test prompt",
-            });
-            setModelError(false);
-
-            return true;
-        } catch (error) {
-            setModelError(true);
-            console.log("Error validating model: ", error);
-            return false;
-        }
+        });
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -122,7 +146,7 @@ const Configuration: FC = () => {
         setModelType("local");
         setModels([]);
         setModelError(false);
-        setIsApiKeyValidated(false);
+        setIsApiKeyValidated(true);
         setIsConfigured(false);
 
         chrome.storage.local.remove([
@@ -152,7 +176,7 @@ const Configuration: FC = () => {
             setModelType(response['search-ai-model-type']);
             setApiKey(response['search-ai-model-api-key']);
             setModel(response['search-ai-model']);
-            setModels([response['search-ai-model']]);
+            setModels([]);
 
             if (response['search-ai-model-api-key']) {
                 setIsApiKeyValidated(true);
@@ -160,6 +184,28 @@ const Configuration: FC = () => {
 
             if (response['search-ai-model']) {
                 setIsConfigured(true);
+            }
+
+            if (response['search-ai-model']) {
+                chrome.runtime.sendMessage({
+                    client: "search-ai",
+                    action: "getModels",
+                    query: {
+                        provider: response['search-ai-model-provider'],
+                        type: response['search-ai-model-type'],
+                        apiKey: response['search-ai-model-api-key'],
+                    },
+                    refresh: false,
+                }, (response) => {
+                    if (response) {
+                        if (response.success === false) {
+                            console.error("Error fetching models: ", response.error);
+                            setModels([]);
+                        } else {
+                            setModels(response?.models);
+                        }
+                    }
+                });
             }
 
             if (response['search-ai-system-prompt']) {
@@ -180,11 +226,11 @@ const Configuration: FC = () => {
                         className="p-2 w-full bg-gray-700 border border-gray-400 rounded cursor-pointer"
                         name="search-ai-llm-provider"
                         value={modelProvider}
-                        onChange={handleProvider}
+                        onChange={handleProviderChange}
                         required
                     >
                         <option value="">Choose model provider</option>
-                        {providers.map((provider) => <option value={provider.value}>{provider.name}</option>)}
+                        {providers?.map((provider) => <option value={provider.value}>{provider.name}</option>)}
                     </select>
                 </div>
 
@@ -193,14 +239,20 @@ const Configuration: FC = () => {
                         className="space-y-2"
                     >
                         <input
-                            className="p-2 w-full bg-gray-700 border border-gray-400 rounded"
+                            className={`p-2 w-full bg-gray-700 border rounded ${apiKeyError ? 'border-red-500 focus:outline focus:outline-red-500' : 'border-gray-400'}`}
                             name="search-ai-llm-api-key"
-                            type="text"
+                            type="password"
                             placeholder="Enter API key"
                             value={apiKey}
-                            onChange={(e) => setApiKey(e.target.value)}
+                            onChange={handleApiKeyChange}
                             required
                         />
+
+                        {apiKeyError && <div
+                            className="px-1 text-red-600 dark:text-red-500 text-xs"
+                        >
+                            <span>Invalid API key</span>
+                        </div>}
 
                         <div
                             className="text-gray-400 text-xs"
@@ -208,18 +260,14 @@ const Configuration: FC = () => {
                             <span>Validate API key to choose provider model.</span>
                         </div>
 
-                        {apiKeyError && <div
-                            className="px-1 text-red-500 text-xs"
-                        >
-                            <span>Invalid API key</span>
-                        </div>}
-
                         <button
                             className={`p-1 bg-blue-400 hover:bg-blue-500 rounded ${validateApiKeyLoading || isApiKeyValidated ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                             onClick={validateApiKey}
                             disabled={validateApiKeyLoading || isApiKeyValidated}
                         >
-                            {validateApiKeyLoading ? 'Validating...' : 'Validate'}
+                            {validateApiKeyLoading ?
+                                'Validating...' :
+                                isApiKeyValidated ? 'Validated' : 'Validate'}
                         </button>
                     </div>}
 
@@ -235,7 +283,7 @@ const Configuration: FC = () => {
                             required
                         >
                             <option value="">Choose model</option>
-                            {models.map((model) => <option value={model}>{model}</option>)}
+                            {models?.map((model) => <option value={model}>{model}</option>)}
                         </select>
                     </div>
 
@@ -279,7 +327,9 @@ const Configuration: FC = () => {
                         type="submit"
                         disabled={loading || isconfigured}
                     >
-                        {loading ? 'Configuring...' : 'Save'}
+                        {loading ?
+                            'Configuring...' :
+                            isconfigured ? 'Configurde' : 'Save'}
                     </button>
 
                     <button

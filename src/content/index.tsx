@@ -40,9 +40,10 @@ const Content: FC = () => {
 
         chrome.runtime.sendMessage({
             client: "search-ai",
+            action: "processPrompt",
             query: {
                 prompt: selectedText,
-            }
+            },
         }, (response) => {
             if (response) {
                 if (response.success === false) {
