@@ -15,6 +15,7 @@ const Configuration: FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [isApiKeyValidated, setIsApiKeyValidated] = useState<boolean>(true);
     const [isconfigured, setIsConfigured] = useState<boolean>(false);
+    const [configureError, setConfigureError] = useState<boolean>(false);
 
     const clearConfiguration = () => {
         setApiKey("");
@@ -93,7 +94,6 @@ const Configuration: FC = () => {
     const handleModelChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setModel(event.target.value);
         setModelError(false);
-        setIsApiKeyValidated(false);
         setIsConfigured(false);
     }
 
@@ -120,9 +120,11 @@ const Configuration: FC = () => {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
+        setConfigureError(false);
 
         if (!await validateModel()) {
             setLoading(false);
+            setConfigureError(true);
             return;
         }
 
@@ -321,6 +323,12 @@ const Configuration: FC = () => {
                     >
                         <span>Click save and refresh the page to apply changes.</span>
                     </div>
+
+                    {configureError && <div
+                        className="px-1 text-red-500 text-xs"
+                    >
+                        <span>Error in configuring...</span>
+                    </div>}
 
                     <button
                         className={`py-1 w-full bg-blue-400 hover:bg-blue-500 rounded ${loading || isconfigured ? 'cursor-not-allowed' : 'cursor-pointer'}`}

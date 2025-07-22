@@ -1,7 +1,7 @@
 import ModelProviderFactory from "./providers/ModelProviderFactory";
 
 var config: any = undefined;
-var models: any = undefined;
+var providerConfig: any = {};
 
 chrome.storage.local.get([
     'search-ai-model-provider',
@@ -22,11 +22,12 @@ chrome.storage.local.get([
 // This function fetches models based on the provider and type.
 const getModels = async (provider: string, type: string, apiKey?: string) => {
     try {
+        providerConfig.provider = provider;
         switch (type) {
             case 'local': {
                 const localProvider = ModelProviderFactory.createLocalProvider({ provider: provider });
-                models = await localProvider.getModels();
-                return models;
+                providerConfig.models = await localProvider.getModels();
+                return providerConfig.models;
             }
             case 'remote': {
                 const remoteProvider = ModelProviderFactory.createProvider({
@@ -35,8 +36,8 @@ const getModels = async (provider: string, type: string, apiKey?: string) => {
                         apiKey: apiKey || "",
                     },
                 });
-                models = await remoteProvider.getModels();
-                return models;
+                providerConfig.models = await remoteProvider.getModels();
+                return providerConfig.models;
             }
             default:
                 throw new Error('Invalid model type');
@@ -114,10 +115,12 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         case 'getModels': {
             const { provider, type, apiKey } = request.query;
 
-            if (provider === config.provider && models !== undefined && request.refresh === false) {
+            if (providerConfig !== undefined &&
+                provider === providerConfig.provider &&
+                request.refresh === false) {
                 sendResponse({
                     success: true,
-                    models: models,
+                    models: providerConfig.models,
                 });
 
                 return;
