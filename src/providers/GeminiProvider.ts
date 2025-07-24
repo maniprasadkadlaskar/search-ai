@@ -1,9 +1,10 @@
 import axios from "axios";
 import type { IModelProvider, GenerateProps, ConfigProps } from "./ModelProvider";
+import { providerURL } from "../utils/constants";
 
 // This class provides an interface to interact with the Gemini API for generating text responses.
 class GeminiProvider implements IModelProvider {
-    private readonly baseUrl: string = "https://generativelanguage.googleapis.com/v1beta/models";
+    private readonly baseUrl: string = providerURL.gemini;
     private apiKey: string;
 
     constructor(props: ConfigProps) {
