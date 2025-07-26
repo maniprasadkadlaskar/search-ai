@@ -7,12 +7,13 @@ Thank you for your interest in contributing! We welcome all kinds of contributio
 1. **Fork the repository** and create your branch from `main`.
 2. **Use a descriptive branch name** based on the type of contribution:
    - `fix/<short-description>` for bug fixes
-   - `feature/<short-description>` for new features
+   - `feat/<short-description>` for new features
    - `chore/<short-description>` for maintenance tasks
    - `refac/<short-description>` for refactoring code
 3. **Make your changes** with clear, concise commit messages.
 4. **Test your changes** to ensure everything works as expected.
-5. **Submit a pull request** with a description of what you’ve done.
+5. **Submit a pull request** targeting the `develop` branch, not `main`. All changes should be merged into `develop` first. The `main` branch is reserved for stable releases.
+
 
 ## Code Style
 
