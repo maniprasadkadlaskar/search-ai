@@ -10,10 +10,26 @@
   }
 
   .system-prompt::-webkit-scrollbar-thumb {
-    @apply bg-indigo-500 rounded-full;
+    @apply bg-indigo-600 rounded-full;
   }
 
   .system-prompt::-webkit-scrollbar-thumb:hover {
-    @apply bg-indigo-600;
+    @apply bg-indigo-500;
+  }
+
+  .model-list::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  .model-list::-webkit-scrollbar-track {
+    @apply bg-gray-700 rounded-full;
+  }
+
+  .model-list::-webkit-scrollbar-thumb {
+    @apply bg-indigo-600 rounded-full;
+  }
+
+  .model-list::-webkit-scrollbar-thumb:hover {
+    @apply bg-indigo-500;
   }
 }

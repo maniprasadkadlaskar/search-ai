@@ -1,5 +1,7 @@
 import { useEffect, useState, type ChangeEvent, type FC, type FormEvent } from "react";
 import { providers, providerType } from "../utils/constants";
+import { Save, CheckCircle, RefreshCw, Key, Check } from "react-feather";
+import { config } from "../utils/constants";
 import "./index.css";
 
 const Configuration: FC = () => {
@@ -110,7 +112,7 @@ const Configuration: FC = () => {
                 },
             }, (response) => {
                 if (response) {
-                    setModelError(response.success);
+                    setModelError(!response.success);
                     resolve(response.success);
                 }
             });
@@ -138,7 +140,6 @@ const Configuration: FC = () => {
 
         setIsConfigured(true);
         setLoading(false);
-        chrome.runtime.reload();
     }
 
     const handleReset = () => {
@@ -213,7 +214,7 @@ const Configuration: FC = () => {
             if (response['search-ai-system-prompt']) {
                 setSystemPrompt(response['search-ai-system-prompt']);
             } else {
-                setSystemPrompt('You are a helpful AI assisstant. User input selected text from the web page. You need to provide a relevant information / answer with maximum of 200 characters. If you do not know the answer, just say "I do not know". Do not provide any other information.');
+                setSystemPrompt(config.SYSTEM_PROMPT);
             }
         });
     }, []);
@@ -225,7 +226,7 @@ const Configuration: FC = () => {
             >
                 <div>
                     <select
-                        className="p-2 w-full bg-gray-700 border border-gray-400 rounded cursor-pointer"
+                        className="p-2 w-full bg-gray-800 border border-gray-400 rounded cursor-pointer"
                         name="search-ai-llm-provider"
                         value={modelProvider}
                         onChange={handleProviderChange}
@@ -241,7 +242,7 @@ const Configuration: FC = () => {
                         className="space-y-2"
                     >
                         <input
-                            className={`p-2 w-full bg-gray-700 border rounded ${apiKeyError ? 'border-red-500 focus:outline focus:outline-red-500' : 'border-gray-400'}`}
+                            className={`p-2 w-full bg-gray-800 border rounded ${apiKeyError ? 'border-red-500 focus:outline focus:outline-red-500' : 'border-gray-400'}`}
                             name="search-ai-llm-api-key"
                             type="password"
                             placeholder="Enter API key"
@@ -263,13 +264,23 @@ const Configuration: FC = () => {
                         </div>
 
                         <button
-                            className={`p-1 bg-blue-400 hover:bg-blue-500 rounded ${validateApiKeyLoading || isApiKeyValidated ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                            className={`p-1 bg-indigo-500 hover:bg-indigo-600 rounded ${validateApiKeyLoading || isApiKeyValidated ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                             onClick={validateApiKey}
                             disabled={validateApiKeyLoading || isApiKeyValidated}
                         >
                             {validateApiKeyLoading ?
                                 'Validating...' :
-                                isApiKeyValidated ? 'Validated' : 'Validate'}
+                                isApiKeyValidated ?
+                                    <div className="flex justify-center gap-1">
+                                        <CheckCircle size={15} />
+                                        Validated
+                                    </div>
+                                    :
+                                    <div className="flex justify-center gap-1">
+                                        <Key size={15} />
+                                        Validate
+                                    </div>
+                            }
                         </button>
                     </div>}
 
@@ -278,7 +289,7 @@ const Configuration: FC = () => {
                 >
                     <div>
                         <select
-                            className="p-2 w-full bg-gray-700 border border-gray-400 rounded cursor-pointer"
+                            className="model-list p-2 w-full bg-gray-800 border border-gray-400 rounded cursor-pointer"
                             name="search-ai-llm-model"
                             value={model}
                             onChange={handleModelChange}
@@ -305,7 +316,7 @@ const Configuration: FC = () => {
 
                     <div>
                         <textarea
-                            className="system-prompt p-2 w-full bg-gray-700 border border-gray-400 rounded"
+                            className="system-prompt p-2 w-full bg-gray-800 border border-gray-400 rounded"
                             name="search-ai-system-prompt"
                             value={systemPrompt}
                             onChange={(e) => setSystemPrompt(e.target.value)}
@@ -331,20 +342,33 @@ const Configuration: FC = () => {
                     </div>}
 
                     <button
-                        className={`py-1 w-full bg-blue-400 hover:bg-blue-500 rounded ${loading || isconfigured ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                        className={`py-1 w-full bg-indigo-500 hover:bg-indigo-600 rounded ${loading || isconfigured ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                         type="submit"
                         disabled={loading || isconfigured}
                     >
                         {loading ?
-                            'Configuring...' :
-                            isconfigured ? 'Configurde' : 'Save'}
+                            'Saving...' :
+                            isconfigured ?
+                                <div className="flex justify-center gap-1">
+                                    <Check size={15} />
+                                    Saved
+                                </div>
+                                :
+                                <div className="flex justify-center gap-1">
+                                    <Save size={15} />
+                                    Save
+                                </div>
+                        }
                     </button>
 
                     <button
                         className="py-1 w-full bg-gray-500 hover:bg-gray-600 rounded cursor-pointer"
                         type="reset"
                     >
-                        Reset
+                        <div className="flex justify-center gap-1">
+                            <RefreshCw size={15} />
+                            Reset
+                        </div>
                     </button>
                 </div>
             </div>

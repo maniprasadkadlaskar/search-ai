@@ -5,7 +5,7 @@ import Version from "./components/Version";
 const App = () => {
   return (
     <div
-      className="min-w-max text-white bg-gray-700"
+      className="min-w-max text-white bg-gray-800"
     >
       <Home />
       <Configuration />
