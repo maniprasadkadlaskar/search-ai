@@ -140,6 +140,8 @@ const Configuration: FC = () => {
 
         setIsConfigured(true);
         setLoading(false);
+
+        chrome.runtime.reload();
     }
 
     const handleReset = () => {

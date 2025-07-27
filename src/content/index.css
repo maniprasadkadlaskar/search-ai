@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+.search-ai-el {
+  all: unset;
+}
+
 @layer components {
   .search-ai-content::-webkit-scrollbar {
     @apply w-1.5;

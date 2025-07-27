@@ -7,9 +7,11 @@ interface ContentControlProps {
 
 const ContentControl: FC<ContentControlProps> = ({ handleSearch }) => {
     return (
-        <div>
+        <div
+            className="search-ai-el"
+        >
             <button
-                className="!p-2 hover:!text-indigo-500 !cursor-pointer"
+                className="search-ai-el !p-2 hover:!text-indigo-500 !cursor-pointer"
                 onClick={handleSearch}
             >
                 <Search />

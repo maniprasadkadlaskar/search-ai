@@ -1,4 +1,5 @@
 import ModelProviderFactory from "./providers/ModelProviderFactory";
+import { config as systemConfig } from "./utils/constants";
 
 var config: any = undefined;
 var providerConfig: any = {};
@@ -84,7 +85,7 @@ const processPrompt = async (prompt: string) => {
         throw new Error('No model is configured');
     }
 
-    const inputPrompt = config.systemPrompt + 'input: ' + prompt;
+    const inputPrompt = config.systemPrompt + '\ninput: ' + prompt + '\n' + systemConfig.SYSTEM_OUTPUT;
 
     const provider = config.type === 'local' ? ModelProviderFactory.createLocalProvider({ provider: config.provider })
         : ModelProviderFactory.createProvider({

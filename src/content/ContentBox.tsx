@@ -1,5 +1,8 @@
 import type { FC } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { X } from "react-feather";
+import "./index.css";
 
 interface ContentBoxProps {
     content: string;
@@ -15,7 +18,7 @@ const ContentBox: FC<ContentBoxProps> = ({ content, setIsSearched }) => {
                 className="!p-1 !flex !justify-end !border-b !border-gray-500"
             >
                 <button
-                    className="hover:!text-indigo-500 !cursor-pointer"
+                    className="search-ai-el hover:!text-indigo-500 !cursor-pointer"
                     onClick={() => setIsSearched(false)}
                 >
                     <X />
@@ -23,9 +26,9 @@ const ContentBox: FC<ContentBoxProps> = ({ content, setIsSearched }) => {
             </div>
 
             <div
-                className="search-ai-content !p-2 !max-h-80 !overflow-auto"
+                className="search-ai-content !p-1 !max-h-80 !overflow-auto"
             >
-                {content}
+                <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
             </div>
         </div>
     );

@@ -67,7 +67,7 @@ const Content: FC = () => {
 
     return (
         <div
-            className="!w-min !absolute !text-white !bg-gray-700 !rounded"
+            className="search-ai-el !w-min !absolute !z-50 !text-white !bg-gray-700 !rounded"
             style={{
                 top: pos?.y || 0,
                 left: pos?.x || 0,
