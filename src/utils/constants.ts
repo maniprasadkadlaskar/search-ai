@@ -34,4 +34,5 @@ export const providerURL = {
 // default configuration
 export const config = {
     SYSTEM_PROMPT: 'You are a helpful AI assisstant. User input selected text from the web page. You need to provide a relevant information / answer with maximum of 200 characters. If you do not know the answer, just say "I do not know". Do not provide any other information.',
+    SYSTEM_OUTPUT: 'Output should be in markdown format. Do not provide any other information.',
 }
