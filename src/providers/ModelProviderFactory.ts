@@ -1,5 +1,5 @@
 import GeminiProvider from "./GeminiProvider";
-import GrokProvider from "./GrokProvider";
+import GroqProvider from "./GroqProvider";
 import type { ConfigProps } from "./ModelProvider";
 import OllamaProvider from "./OllamaProvider";
 
@@ -31,8 +31,8 @@ class ModelProviderFactory {
         switch (provider) {
             case 'gemini':
                 return new GeminiProvider(config);
-            case 'grok':
-                return new GrokProvider(config);
+            case 'groq':
+                return new GroqProvider(config);
             default:
                 throw new Error(`Unsupported provider: ${provider}`);
         }

@@ -2,12 +2,12 @@ import axios from "axios";
 import type { IModelProvider, ConfigProps, GenerateProps } from "./ModelProvider";
 import { providerURL } from "../utils/constants";
 
-// This class provides an interface to interact with the Grok API for generating text responses.
-class GrokProvider implements IModelProvider {
-    private readonly baseUrl: string = providerURL.grok;
+// This class provides an interface to interact with the Groq API for generating text responses.
+class GroqProvider implements IModelProvider {
+    private readonly baseUrl: string = providerURL.groq;
     private apiKey: string;
 
-    // Configuration properties for the GrokProvider.
+    // Configuration properties for the GroqProvider.
     constructor(props: ConfigProps) {
         this.apiKey = props.apiKey;
     }
@@ -50,7 +50,7 @@ class GrokProvider implements IModelProvider {
             const models = response.data.data
                 .filter((model: any) => model?.id && model?.object === 'model')
                 .map((model: any) => model.id);
-            
+
             return models;
         } catch (error: any) {
             console.error("Error fetching models:", error);
@@ -59,4 +59,4 @@ class GrokProvider implements IModelProvider {
     }
 }
 
-export default GrokProvider;
+export default GroqProvider;

@@ -6,8 +6,8 @@ export const providers = [
         type: "remote",
     },
     {
-        name: "Grok",
-        value: "grok",
+        name: "Groq",
+        value: "groq",
         type: "remote",
     },
     {
@@ -20,14 +20,14 @@ export const providers = [
 // provider types
 export const providerType = {
     gemini: "remote",
-    grok: "remote",
+    groq: "remote",
     ollama: "local",
 };
 
 // provider URLs
 export const providerURL = {
     gemini: "https://generativelanguage.googleapis.com/v1beta/models",
-    grok: "https://api.groq.com/openai/v1",
+    groq: "https://api.groq.com/openai/v1",
     ollama: "http://localhost:11434",
 };
 
