@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+.search-ai-el {
+  all: unset;
+}
+
+@layer components {
+  .search-ai-content::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  .search-ai-content::-webkit-scrollbar-track {
+    @apply bg-gray-700 rounded-full;
+  }
+
+  .search-ai-content::-webkit-scrollbar-thumb {
+    @apply bg-indigo-500 rounded-full;
+  }
+
+  .search-ai-content::-webkit-scrollbar-thumb:hover {
+    @apply bg-indigo-600;
+  }
+}

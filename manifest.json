@@ -1,8 +1,36 @@
 {
     "manifest_version": 3,
-    "name": "select ai alpha",
-    "version": "1.0.0",
+    "name": "Search AI",
+    "description": "Search, summarize, explain the content of the web page using personalized AI model.",
+    "version": "0.0.1",
     "action": {
-        "default_popup": "index.html"
-    }
+        "default_popup": "index.html",
+        "default_icon": {
+            "16": "assets/icon-16.png",
+            "48": "assets/icon-48.png",
+            "128": "assets/icon-128.png"
+        }
+    },
+    "icons": {
+        "16": "assets/icon-16.png",
+        "48": "assets/icon-48.png",
+        "128": "assets/icon-128.png"
+    },
+    "background": {
+        "service_worker": "src/background.tsx"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/*",
+                "http://*/*"
+            ],
+            "js": [
+                "src/content.tsx"
+            ]
+        }
+    ],
+    "permissions": [
+        "storage"
+    ]
 }

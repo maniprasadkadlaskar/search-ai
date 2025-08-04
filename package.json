@@ -1,24 +1,29 @@
 {
-  "name": "select-ai",
+  "name": "search-ai",
+  "description": "Search, summarize, explain the content of the web page using personalized AI model.",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:watch": "vite build --watch",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build:dev": "vite build --watch",
+    "build:prod": "vite build && zip -r search-ai.zip ./dist/*",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
+    "axios": "^1.10.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-feather": "^2.0.10",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0",
     "@eslint/js": "^9.25.0",
+    "@types/chrome": "^0.0.326",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",

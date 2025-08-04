@@ -1,54 +1,59 @@
-# React + TypeScript + Vite
+# Search AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Chrome extension that allows you to search the selected text from web pages using LLM models.
 
-Currently, two official plugins are available:
+## ✨Features
+- Search selected text using LLM models
+- Supports local and remote model providers
+- Customizable system prompt
+- Configurable model parameters
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🤖 Supported model providers
+- Gemini
+- Groq
+- Ollama
 
-## Expanding the ESLint configuration
+## 🛠️Technologies Used
+- ReactJS
+- TypeScript
+- Tailwind CSS
+- Vite
+- CRXJS
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦Installation
+```bash
+# Clone the repository
+git clone https://github.com/maniprasadkadlaskar/search-ai.git
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Navigate to the project directory
+cd search-ai
+
+# Install dependencies
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧱Building the Extension
+```bash
+# Build the extension
+npm run build
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+# Build the extension in watch mode
+npm run build:dev
 ```
+
+## 🚀Running the Extension
+1. Open Chrome and navigate to `chrome://extensions/`.
+2. Enable "Developer mode" in the top right corner.
+3. Click on "Load unpacked" and select the `dist` directory of the project.
+
+## 📝Configuration
+- Set environment variable for ollama model provider to be accessed from the extension:
+```bash
+export OLLAMA_ORIGINS="chrome-extension://*"
+```
+
+## ✅Pull Requests
+We welcome contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+
+## 📄License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
