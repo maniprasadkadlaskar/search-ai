@@ -1,5 +1,4 @@
-# Contributing to This Project
-
+# Contributing to Search AI
 Thank you for your interest in contributing! We welcome all kinds of contributions, including bug reports, feature requests, documentation improvements, and code enhancements.
 
 ## How to Contribute
@@ -10,6 +9,7 @@ Thank you for your interest in contributing! We welcome all kinds of contributio
    - `feat/<short-description>` for new features
    - `chore/<short-description>` for maintenance tasks
    - `refac/<short-description>` for refactoring code
+   - `docs/<short-description>` for documentation updates
 3. **Make your changes** with clear, concise commit messages.
 4. **Test your changes** to ensure everything works as expected.
 5. **Submit a pull request** targeting the `develop` branch, not `main`. All changes should be merged into `develop` first. The `main` branch is reserved for stable releases.
@@ -31,6 +31,14 @@ If you find a bug or have a feature request, please open an issue and include:
 
 Please be respectful and considerate in all interactions. We follow a Code of Conduct to ensure a welcoming environment for everyone.
 
+## License
+This project is licensed under the MIT License. By contributing, you agree that your contributions will be licensed under the same terms.
+
+## Contact
+For any questions or discussions, feel free to reach out via:
+- GitHub Issues
+- [Linkedin](https://www.linkedin.com/in/maniprasad-kadlaskar-81368b1b5)
+
 ---
 
-Thanks again for helping improve this project!
+Thanks again for helping improve Search AI! Your contributions are greatly appreciated.
