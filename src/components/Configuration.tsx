@@ -119,6 +119,11 @@ const Configuration: FC = () => {
         });
     }
 
+    const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        setSystemPrompt(event.target.value);
+        setIsConfigured(false);
+    }
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
@@ -321,7 +326,7 @@ const Configuration: FC = () => {
                             className="system-prompt p-2 w-full bg-gray-800 border border-gray-400 rounded"
                             name="search-ai-system-prompt"
                             value={systemPrompt}
-                            onChange={(e) => setSystemPrompt(e.target.value)}
+                            onChange={handleSystemPromptChange}
                             placeholder="System prompt"
                             rows={6}
                         />
