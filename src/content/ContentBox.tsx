@@ -21,7 +21,7 @@ const ContentBox: FC<ContentBoxProps> = ({ content, setIsSearched }) => {
                     className="search-ai-el hover:!text-indigo-500 !cursor-pointer"
                     onClick={() => setIsSearched(false)}
                 >
-                    <X />
+                    <X size={15} />
                 </button>
             </div>
 
