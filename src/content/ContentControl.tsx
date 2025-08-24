@@ -14,7 +14,7 @@ const ContentControl: FC<ContentControlProps> = ({ handleSearch }) => {
                 className="search-ai-el !p-2 hover:!text-indigo-500 !cursor-pointer"
                 onClick={handleSearch}
             >
-                <Search />
+                <Search size={20} />
             </button>
         </div>
     );

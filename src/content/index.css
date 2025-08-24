@@ -4,6 +4,11 @@
   all: unset;
 }
 
+.search-ai-content * {
+  margin: 2px;
+  font-size: 13px;
+}
+
 @layer components {
   .search-ai-content::-webkit-scrollbar {
     @apply w-1.5;
