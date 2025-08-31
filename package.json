@@ -2,7 +2,7 @@
   "name": "search-ai",
   "description": "Search, summarize, explain the content of the web page using personalized AI model.",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",

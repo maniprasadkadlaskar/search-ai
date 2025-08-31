@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Search AI",
     "description": "Search, summarize, explain the content of the web page using personalized AI model.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "action": {
         "default_popup": "index.html",
         "default_icon": {
