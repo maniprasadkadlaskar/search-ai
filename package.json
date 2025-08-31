@@ -5,6 +5,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "dev": "vite --host",
     "build": "tsc -b && vite build",
     "build:dev": "vite build --watch",
     "build:prod": "vite build && zip -r search-ai.zip ./dist/*",
@@ -13,7 +14,9 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
+    "bootstrap": "^5.3.7",
     "react": "^19.1.0",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
     "react-feather": "^2.0.10",
     "react-markdown": "^10.1.0",
